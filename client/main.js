@@ -178,6 +178,9 @@ Template.admin.events({
   'blur .poll-name': function(e) {
     Meteor.call('changePoll', Session.get('currentPoll'), {name: e.target.value});
   },
+  'blur .open-id': function(e) {
+    Meteor.call('changePoll', Session.get('currentPoll'), {openId: e.target.value});
+  },
   'blur .q-name': function(e) {
     Meteor.call('changeQuestion', Session.get('currentPoll'), this.id, {name: e.target.value});
   },
