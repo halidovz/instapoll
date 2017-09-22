@@ -1,25 +1,217 @@
 <head>
-  <title>instapoll</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  <style>
+    .list-group-item {
+        display: list-item;
+        list-style: decimal inside;
+    }
+  </style>
 </head>
 
 <body>
-  <h1>Welcome to Meteor!</h1>
-
-  {{> hello}}
-  {{> info}}
 </body>
-
-<template name="hello">
-  <button>Click Me</button>
-  <p>You've pressed the button {{counter}} times.</p>
+<template name="main">
+    <div class="jumbotron">
+        <h1>Instapoll</h1>
+        <!-- <div id="qrcode"></div> -->
+        <p>Создание и проведение онлайн опросов в режиме реального времени</p>
+        <div class="btn-group btn-group-justified" role="group" aria-label="...">
+            <a class="btn btn-success btn-lg" href="#" data-toggle="modal" data-target=".create" role="button"><span class="glyphicon glyphicon-plus"></span></a><a class="btn btn-primary btn-lg" href="#" data-toggle="modal" data-target=".edit" role="button"><span class="glyphicon glyphicon-pencil"></span></a><a class="btn btn-warning btn-lg" data-toggle="modal" data-target=".open" href="#" role="button"><span class="glyphicon glyphicon-folder-open"></span></a>
+        </div>
+    </div>
+    <div class="modal  edit" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title" id="mySmallModalLabel">Редактирование<a class="anchorjs-link" href="#mySmallModalLabel"><span class="anchorjs-icon"></span></a></h4>
+                </div>
+                <div class="modal-body">
+                    <form class="edit-poll">
+                        <div class="form-group">
+                            <input type="text" name="poll" class="form-control" placeholder="Приватный ID">
+                        </div>
+                        <button class="btn btn-default" type="submit">Редактировать</button>
+                    </form>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+    </div>
+    <div class="modal  create" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title" id="mySmallModalLabel">Создание<a class="anchorjs-link" href="#mySmallModalLabel"><span class="anchorjs-icon"></span></a></h4>
+                </div>
+                <div class="modal-body">
+                    {{>error}}
+                    <form class="new-poll">
+                        <div class="form-group">
+                            <input type="text" name="name" class="form-control" placeholder="Название опроса">
+                        </div>
+                        <button class="btn btn-default" type="submit">Создать</button>
+                    </form>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+    </div>
+    <div class="modal  open" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title" id="mySmallModalLabel">Вход<a class="anchorjs-link" href="#mySmallModalLabel"><span class="anchorjs-icon"></span></a></h4>
+                </div>
+                <div class="modal-body">
+                    <form class="open-poll">
+                        <div class="form-group">
+                            <input type="text" name="poll" class="form-control" placeholder="ID опроса">
+                        </div>
+                        <button class="btn btn-default" type="submit">Войти</button>
+                    </form>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+    </div>
+    <script type="text/javascript">
+    $('.modal').on('shown.bs.modal', function() {
+            $('input:visible').focus();
+        })
+    </script>
+</template>
+<template name="admin">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3>Редактирование опроса</h3></div>
+        <div class="panel-body">
+            {{#if _id}}
+            {{#if questions.length}}<span class="glyphicon glyphicon-play play" style="float: right; cursor: pointer"></span>{{/if}}
+            <div class="form-group">
+                <label for="exampleInputEmail1">Название опроса</label>
+                <input type="text" name="name" class="form-control poll-name" placeholder="Название опроса" value="{{name}}">
+                <br/>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">Вопросы</div>
+                <div class="panel-body">
+                    {{#each questions}} {{> question}} {{/each}}
+                    <span class="btn btn-default add-q">Добавить вопрос</span>
+                </div>
+            </div>
+            <b>Публичный ID:</b> {{openId}}
+            <br/>
+            <b>Приватный ID:</b> {{privateId}}
+            <br/>
+            <button class="btn btn-default {{#unless dirty}} disabled {{/unless}} clear">Очистить результаты</button>
+            {{else}} Такого опроса не существует! {{/if}}
+        </div>
+    </div>
 </template>
 
-<template name="info">
-  <h2>Learn Meteor!</h2>
-  <ul>
-    <li><a href="https://www.meteor.com/try" target="_blank">Do the Tutorial</a></li>
-    <li><a href="http://guide.meteor.com" target="_blank">Follow the Guide</a></li>
-    <li><a href="https://docs.meteor.com" target="_blank">Read the Docs</a></li>
-    <li><a href="https://forums.meteor.com" target="_blank">Discussions</a></li>
-  </ul>
+<template name="play">
+    <div class="panel panel-default">
+        <div class="panel-heading" style="cursor: pointer; " onclick="history.back()">
+            <h3 style="float: left"><span class="glyphicon glyphicon-chevron-left" style="font-size: 19px" ></span> {{#unless type}}{{openId}}{{/unless}}</h3>
+            <h3 style="float: right">{{watchersCount}} <span class="glyphicon glyphicon-eye-open"></span></h3>
+            <div style="clear: both"></div>
+        </div>
+        <div class="panel-body">
+            <h4>{{name}}</h4>
+            <div class="panel panel-default">
+                <div class="panel-body question">
+                    <h4>{{question.name}}</h4>
+                    <ol class="list-group">
+                        {{#each question.variants}}
+                        <li class="list-group-item">
+                            {{name}} {{#if equals ../../type 0 }}
+                            <span style="float:right">{{count}} / {{percent count ../allCount}} </span> {{/if}}
+                        </li>
+                        {{/each}}
+                    </ol>
+                </div>
+            </div>
+            <hr/>
+            <p style="text-align: center; margin: 0">
+                <span class="glyphicon glyphicon-chevron-left switch-q" data-direction="-1" style="float:left; cursor: pointer"></span>
+                <span>{{currentQ}} из {{questions.length}}</span>
+                <span class="glyphicon glyphicon-chevron-right switch-q" data-direction="1" style="float:right; cursor: pointer"></span>
+            </p>
+        </div>
+    </div>
+</template>
+
+<template name="open">
+    <style type="text/css">
+    @media screen and (min-width:800px) {
+        .variants li:hover {
+            background: #eee;
+        }
+    }
+    
+    .selected {
+        background: #ddd !important;
+    }
+    
+    .variants li {
+        cursor: pointer;
+    }
+    </style>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="question">
+                <ol class="list-group variants">
+                    {{#each question.variants}}
+                    <li class="list-group-item variant {{#if selected}} selected {{/if}}">{{name}}</li>
+                    {{/each}}
+                </ol>
+            </div>
+        </div>
+    </div>
+</template>
+
+
+<template name="question">
+  <div class="panel panel-default">
+    <div class="panel-body question">
+      <span class="glyphicon glyphicon-remove remove-q" style="cursor: pointer" aria-hidden="true"></span>
+      <input type="text" class="form-control q-name" name="name" value="{{name}}" placeholder="Вопрос"/><br/>
+      {{#each variants}}
+        {{> variant}}
+    {{/each}}
+    <br/>
+    <span class="btn btn-default add-v">+ вариант</span>
+    </div>
+  </div>
+</template>
+
+<template name="variant">
+  <div class="input-group">
+    <span class="input-group-addon" id="basic-addon1">
+      <span class="glyphicon glyphicon-remove remove-v" style="cursor: pointer" aria-hidden="true"></span>
+    </span>
+    <input type="text" name="name" class="form-control v-name" placeholder="Текст варианта" value="{{name}}" aria-label="...">
+  </div>
+</template>
+
+<template name="layout">
+    <div class="container">
+        {{> yield}}
+    </div>
+</template>
+
+<template name="loading">
+    Загружаю данные... Вы же никуда не спешите? :)
+</template>
+
+<template name="error">
+    {{#if errorMessage}}
+    <div class="alert alert-danger" role="alert">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        <span class="sr-only">Error:</span> {{errorMessage}}
+    </div>
+    {{/if}}
 </template>

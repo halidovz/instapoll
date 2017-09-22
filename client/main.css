@@ -1,1 +1,19 @@
-/* CSS declarations go here */
+.modal-backdrop {
+	background: #fff;
+}
+
+.right {
+	color: rgb(0, 186, 0);
+}
+
+.success {
+	background: rgb(73, 169, 73);
+}
+
+.wrong {
+	background: rgb(255, 226, 226);
+}
+
+.right-p {
+	background: rgb(206, 239, 206);
+}
