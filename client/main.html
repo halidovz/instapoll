@@ -93,7 +93,6 @@
             <div class="form-group">
                 <label for="exampleInputEmail1">Название опроса</label>
                 <input type="text" name="name" class="form-control poll-name" placeholder="Название опроса" value="{{name}}">
-                <br/>
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">Вопросы</div>
@@ -179,6 +178,18 @@
     <div class="panel-body question">
       <span class="glyphicon glyphicon-remove remove-q" style="cursor: pointer" aria-hidden="true"></span>
       <input type="text" class="form-control q-name" name="name" value="{{name}}" placeholder="Вопрос"/><br/>
+      Количество выбираемых вариатов
+      <div class="dropdown">
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+            {{ or answersLimit 1 }}
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+          {{#each answersLimits}}
+          <li role="presentation" class="answers-limit {{#if equals ../answersLimit this.limit}} disabled {{/if}}"><a role="menuitem" tabindex="-1" href="#">{{this.limit}}</a></li>
+          {{/each}}
+        </ul>
+      </div>
       {{#each variants}}
         {{> variant}}
     {{/each}}

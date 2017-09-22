@@ -1,5 +1,6 @@
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
+import Fingerprint from 'meteor/szchenghuang:fingerprint';
 
 import './main.html';
 
@@ -21,6 +22,7 @@ Router.route('/admin/:poll', {
     if(poll && poll.questions) {
       _.forEach(poll.questions, function(q, index) {
         q.index = index;
+        q.answersLimits = [{limit: 1, parent: q}, {limit: 3, parent: q}];
         q.variants && _.forEach(q.variants, function(v, i) {
           v.parent = q;
           v.index = i;
@@ -65,7 +67,7 @@ Router.route('/play', {
           v.count = 0;
           if(poll.question.answers) {
             _.forEach(poll.question.answers, function(a) {
-              if(a == v.id) {
+              if(a.indexOf(v.id) >= 0) {
                 v.count++;
                 poll.allCount++;
               }
@@ -89,6 +91,7 @@ Router.route('/open/:poll', {
     return Meteor.subscribe('poll', Session.get('openedPoll'));
   },
   data: function() {
+  	var fp = Fingerprint.get();
     var pollId = this.params.poll;
     Session.set('openedPoll', pollId);
 
@@ -97,7 +100,7 @@ Router.route('/open/:poll', {
       poll.question = poll.questions[0];
       poll.question.variants && _.forEach(poll.question.variants, function(v, i) {
         v.parent = poll.question;
-        if(poll.question.answers && v.id == poll.question.answers[poll.type == 1 ? Session.get('md5Participant') : Meteor.userId()] )
+        if(poll.question.answers && poll.question.answers[poll.type == 1 ? Session.get('md5Participant') : fp.hash].indexOf(v.id) >= 0 )
           v.selected = true
       })
     }
@@ -181,6 +184,9 @@ Template.admin.events({
   'blur .open-id': function(e) {
     Meteor.call('changePoll', Session.get('currentPoll'), {openId: e.target.value});
   },
+  'click .answers-limit': function(e) {
+    Meteor.call('changeQuestion', Session.get('currentPoll'), this.parent.id, {answersLimit: this.limit});
+  },
   'blur .q-name': function(e) {
     Meteor.call('changeQuestion', Session.get('currentPoll'), this.id, {name: e.target.value});
   },
@@ -216,7 +222,8 @@ Template.play.events({
 
 Template.open.events({
   'click .variant': function(e) {
-    Meteor.call('selectVariant', Session.get('openedPoll'), this.parent.id, this.id, Session.get('md5Participant'));
+  	var fp = Fingerprint.get();
+    Meteor.call('selectVariant', Session.get('openedPoll'), this.parent.id, this.id, fp.hash);
   }
 })
 
@@ -234,10 +241,16 @@ Tracker.autorun(function() {
   }
 });
 
+Fingerprint.compute();
+
 Template.registerHelper('percent', function(one, two) {
   return (!two ? 0 : (one*100/two)).toFixed(2);
 });
 
 Template.registerHelper('equals', function (a, b) {
 	return a === b;
+});
+
+Template.registerHelper('or',(a,b)=>{
+  return a || b;
 });
