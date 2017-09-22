@@ -115,10 +115,6 @@ Template.error.helpers({
 Router.configure({
   layoutTemplate: 'layout',
   loadingTemplate: 'loading',
-  onBeforeAction: function() {
-  	$('.modal').modal('hide');
-  	this.next();
-  }
 });
 
 var displayError = (function() {
@@ -153,6 +149,9 @@ Template.main.events({
 	'submit .open-poll': function(e) {
 	  Router.go('/open/'+e.target.poll.value);
 	  return false;
+	},
+	'submit form': function() {
+		$('.modal').modal('hide');
 	}
 });
 
