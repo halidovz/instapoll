@@ -106,7 +106,8 @@ Router.route('/open/:poll', {
       poll.question = poll.questions[0];
       poll.question.variants && _.forEach(poll.question.variants, function(v, i) {
         v.parent = poll.question;
-        if(poll.question.answers && poll.question.answers[poll.type == 1 ? Session.get('md5Participant') : fp.hash].indexOf(v.id) >= 0 )
+        var userAnswers = poll.question.answers[poll.type == 1 ? Session.get('md5Participant') : fp.hash];
+        if(userAnswers.indexOf(v.id) >= 0 )
           v.selected = true
       })
     }
