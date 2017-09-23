@@ -17,3 +17,21 @@
 .right-p {
 	background: rgb(206, 239, 206);
 }
+
+.qr-container {
+	text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    flex-flow: column;
+}
+
+.qr-container .open-id {
+	text-align: center;
+    font-size: 80px;
+    background: black;
+    color: white;
+    width: 400px;
+    margin-top: 5px;
+}

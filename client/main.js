@@ -10,6 +10,12 @@ Router.route('/', function () {
   this.render('main');
 });
 
+Router.route('/qrcode', {
+	data: function() {
+		return Polls.findOne({privateId: Session.get('currentPoll')});
+	}
+});
+
 Router.route('/admin/:poll', {
 	waitOn: function() {
     return Meteor.subscribe('poll', Session.get('currentPoll'));
@@ -209,6 +215,9 @@ Template.admin.events({
     Meteor.call('switchQuestion', Session.get('currentPoll'), 0);
     Router.go('/play');
   },
+  'click .qrcode': function() {
+    Router.go('/qrcode');
+  },
   'click .clear': function() {
     Meteor.call('clear', Session.get('currentPoll'));
   }
@@ -240,6 +249,12 @@ Tracker.autorun(function() {
     Meteor.subscribe('openPoll', openedPoll);
   }
 });
+
+Presence.state = function() {
+  return {
+    poll: Session.get('openedPoll')
+  };
+}
 
 Fingerprint.compute();
 

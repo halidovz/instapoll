@@ -6,6 +6,7 @@
         list-style: decimal inside;
     }
   </style>
+  <title>Instapoll</title>
 </head>
 
 <body>
@@ -90,6 +91,7 @@
         <div class="panel-body">
             {{#if _id}}
             {{#if questions.length}}<span class="glyphicon glyphicon-play play" style="float: right; cursor: pointer"></span>{{/if}}
+            <span class="glyphicon glyphicon-qrcode qrcode" style="margin-right: 10px; float: right; cursor: pointer"></span>
             <div class="form-group">
                 <label for="exampleInputEmail1">Название опроса</label>
                 <input type="text" name="name" class="form-control poll-name" placeholder="Название опроса" value="{{name}}">
@@ -101,7 +103,7 @@
                     <span class="btn btn-default add-q">Добавить вопрос</span>
                 </div>
             </div>
-            <b>Публичный ID:</b> <input type="text" name="openId" class="open-id" value="{{openId}}">
+            <b>Публичный ID:</b> {{openId}} <!-- <input type="text" name="openId" class="open-id" value="{{openId}}"> -->
             <br/>
             <b>Приватный ID:</b> {{privateId}}
             <br/>
@@ -115,7 +117,7 @@
     <div class="panel panel-default">
         <div class="panel-heading" style="cursor: pointer; " onclick="history.back()">
             <h3 style="float: left"><span class="glyphicon glyphicon-chevron-left" style="font-size: 19px" ></span> {{#unless type}}{{openId}}{{/unless}}</h3>
-            <h3 style="float: right">{{watchersCount}} <span class="glyphicon glyphicon-eye-open"></span></h3>
+            <!-- <h3 style="float: right">{{watchersCount}} <span class="glyphicon glyphicon-eye-open"></span></h3> -->
             <div style="clear: both"></div>
         </div>
         <div class="panel-body">
@@ -170,6 +172,14 @@
             </div>
         </div>
     </div>
+</template>
+
+
+<template name="qrcode">
+  <div class="qr-container">
+    {{> QRCode text=openId size="400px" }}
+    <div class="open-id">{{openId}}</div>
+  </div>
 </template>
 
 
