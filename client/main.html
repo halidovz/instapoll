@@ -164,6 +164,7 @@
     <div class="panel panel-default">
         <div class="panel-body">
             <div class="question">
+                <b>{{ question.name }}</b>
                 <ol class="list-group variants">
                     {{#each question.variants}}
                     <li class="list-group-item variant {{#if selected}} selected {{/if}}">{{name}}</li>
